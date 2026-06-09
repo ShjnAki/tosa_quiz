@@ -1,0 +1,22 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Android / Capacitor build artifacts
+android/app/build/
+android/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+
+# Signing
+*.keystore
+*.jks
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Fichier local non lié au projet
+mydatabase.db
