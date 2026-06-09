@@ -1,7 +1,8 @@
 /* Service worker — TOSA Desktop
-   Stratégie : cache-first sur l'app shell (tout est statique et autonome).
-   Pour livrer une mise à jour : incrémenter CACHE_VERSION. */
-const CACHE_VERSION = "tosa-v1";
+   - HTML / navigation : network-first (le contenu reste à jour ; repli cache hors-ligne).
+   - Ressources statiques (polices, icônes, manifeste) : cache-first.
+   Pour forcer un rafraîchissement du shell : incrémenter CACHE_VERSION. */
+const CACHE_VERSION = "tosa-v2";
 
 // Chemins RELATIFS au scope du SW (important pour GitHub Pages en sous-dossier).
 const APP_SHELL = [
@@ -35,19 +36,37 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
+
+  const isNavigation =
+    req.mode === "navigate" || req.destination === "document";
+
+  if (isNavigation) {
+    // Network-first : on tente le réseau (contenu frais), repli sur le cache hors-ligne.
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put("./index.html", copy));
+          return res;
+        })
+        .catch(() =>
+          caches.match(req).then((c) => c || caches.match("./index.html"))
+        )
+    );
+    return;
+  }
+
+  // Cache-first pour les ressources statiques.
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
-      return fetch(req)
-        .then((res) => {
-          // Met en cache au vol les ressources same-origin récupérées.
-          if (res && res.ok && new URL(req.url).origin === self.location.origin) {
-            const copy = res.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-        .catch(() => caches.match("./index.html")); // repli hors-ligne
+      return fetch(req).then((res) => {
+        if (res && res.ok && new URL(req.url).origin === self.location.origin) {
+          const copy = res.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      });
     })
   );
 });
