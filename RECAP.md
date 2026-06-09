@@ -42,7 +42,7 @@ Transformation du fichier `tosa-desktop-quiz.html` en application distribuable :
 **Phase 4 — GitHub Actions** (`.github/workflows/`)
 - `deploy-pages.yml` : déploie `www/` sur Pages à chaque push `main`
   (`configure-pages` / `upload-pages-artifact path: www` / `deploy-pages`).
-- `build-apk.yml` : JDK 17 Temurin + Node 20, `npm ci`, `npx cap sync android`,
+- `build-apk.yml` : JDK 21 Temurin + Node 22, `npm ci`, `npx cap sync android`,
   `./gradlew assembleDebug`, upload artifact **et** release `latest` (prerelease)
   avec l'APK joint (`softprops/action-gh-release`).
 

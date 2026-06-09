@@ -65,7 +65,8 @@ capacitor.config.json
 
 ### Prérequis
 
-- Node 20+, JDK 17 (pour le build Android), le SDK Android.
+- Node 22+, JDK 21 (pour le build Android), le SDK Android.
+  *(Capacitor 8 exige Node ≥ 22 et Java 21.)*
 
 ### Commandes
 
