@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOSA Desktop — Entraînement</title>
+<meta name="description" content="Quiz d'entraînement à la certification TOSA Desktop : Excel, Word, PowerPoint, Outlook.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e1525">
+<link rel="icon" href="icons/icon-192.png">
+<!-- iOS « Ajouter à l'écran d'accueil » -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TOSA">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+  /* ---- polices auto-hébergées (hors-ligne, variable fonts) ---- */
+  @font-face{
+    font-family:'Space Grotesk'; font-style:normal; font-weight:400 700;
+    font-display:swap; src:url('fonts/space-grotesk-latin-var.woff2') format('woff2');
+  }
+  @font-face{
+    font-family:'Inter'; font-style:normal; font-weight:400 600;
+    font-display:swap; src:url('fonts/inter-latin-var.woff2') format('woff2');
+  }
+  :root{
+    --bg:#0e1525; --bg-2:#161f33; --bg-3:#1d2740;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.15);
+    --text:#e9edf6; --muted:#93a0bd; --muted-2:#6c7894;
+    --amber:#f5b54a; --amber-dim:#3a2f17;
+    --green:#21a366; --red:#e5544b; --red-dim:#3a1d1b; --green-dim:#16331f;
+    /* couleurs Office */
+    --excel:#21a366; --word:#2b88d8; --ppt:#e8703a; --outlook:#36a3e6; --mix:#a97be0;
+    /* bandes TOSA */
+    --b-initial:#5a6a8c; --b-basique:#3f9a9c; --b-operationnel:#3b82c4; --b-avance:#7d5fd6; --b-expert:#f5b54a;
+    --r:14px;
+    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--body);
+    line-height:1.5; min-height:100vh;
+    background-image:radial-gradient(1200px 600px at 80% -10%, rgba(45,72,140,.25), transparent 60%);
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:24px 18px 60px}
+
+  /* ---- header ---- */
+  .top{display:flex; align-items:center; gap:12px; margin-bottom:26px}
+  .top__mark{font-family:var(--display); font-weight:700; font-size:15px; letter-spacing:.5px;
+    border:1px solid var(--line-2); border-radius:8px; padding:6px 9px; color:var(--amber)}
+  .top__t{font-family:var(--display); font-weight:600; font-size:17px; letter-spacing:.2px}
+  .top__sub{font-size:12.5px; color:var(--muted-2); margin-top:1px}
+
+  /* ---- home ---- */
+  .eyebrow{font-family:var(--display); font-size:12px; letter-spacing:1.6px; text-transform:uppercase;
+    color:var(--muted-2); margin:6px 0 14px}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .mod{
+    position:relative; text-align:left; cursor:pointer; color:var(--text);
+    background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r);
+    padding:18px 16px; transition:transform .12s ease, border-color .12s ease, background .12s ease;
+    overflow:hidden;
+  }
+  .mod:hover{transform:translateY(-2px); border-color:var(--line-2); background:var(--bg-3)}
+  .mod:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+  .mod__bar{position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--c)}
+  .mod__name{font-family:var(--display); font-weight:600; font-size:17px; display:flex; align-items:center; gap:9px}
+  .mod__dot{width:9px; height:9px; border-radius:3px; background:var(--c)}
+  .mod__desc{font-size:12.5px; color:var(--muted); margin-top:6px}
+  .mod__meta{font-size:11.5px; color:var(--muted-2); margin-top:12px; font-family:var(--display)}
+  .mod--wide{grid-column:1 / -1}
+  .mod--wide .mod__desc{max-width:90%}
+
+  /* ---- options panel ---- */
+  .panel{background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r); padding:16px; margin-top:14px}
+  .panel__row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 0}
+  .panel__row + .panel__row{border-top:1px solid var(--line)}
+  .panel__label{font-size:13.5px; color:var(--muted)}
+  .seg{display:inline-flex; background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:3px}
+  .seg button{font-family:var(--body); font-size:13px; color:var(--muted); background:none; border:none;
+    padding:6px 12px; border-radius:6px; cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--bg-3); color:var(--text); font-weight:600}
+  .seg button:focus-visible{outline:2px solid var(--amber); outline-offset:1px}
+
+  /* ---- buttons ---- */
+  .cta{font-family:var(--display); font-weight:600; font-size:15px; letter-spacing:.2px;
+    border:none; border-radius:11px; padding:14px 18px; cursor:pointer; width:100%;
+    background:var(--amber); color:#1a1305; transition:filter .12s ease, transform .08s ease}
+  .cta:hover{filter:brightness(1.07)} .cta:active{transform:translateY(1px)}
+  .cta:focus-visible{outline:2px solid #fff; outline-offset:2px}
+  .cta--ghost{background:transparent; color:var(--text); border:1px solid var(--line-2)}
+  .cta--ghost:hover{background:var(--bg-3); filter:none}
+  .cta-row{display:flex; gap:10px; margin-top:14px}
+  .cta-row .cta{width:auto; flex:1}
+
+  /* ---- quiz ---- */
+  .qhead{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px}
+  .qhead__l{display:flex; align-items:center; gap:10px}
+  .pill{font-family:var(--display); font-size:11.5px; font-weight:600; letter-spacing:.4px;
+    padding:4px 9px; border-radius:20px; border:1px solid var(--line-2)}
+  .pill__dot{display:inline-block; width:7px; height:7px; border-radius:2px; margin-right:6px; vertical-align:1px; background:var(--c,var(--amber))}
+  .counter{font-family:var(--display); font-size:13px; color:var(--muted)}
+  .timer{font-family:var(--display); font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums}
+  .timer--low{color:var(--red)}
+  .prog{height:5px; background:var(--bg-3); border-radius:20px; overflow:hidden; margin-bottom:22px}
+  .prog__fill{height:100%; background:var(--amber); border-radius:20px; transition:width .35s ease}
+
+  .qtext{font-family:var(--display); font-weight:600; font-size:19.5px; line-height:1.4; margin-bottom:20px}
+  .lvl-tag{font-size:11px; font-family:var(--display); letter-spacing:.6px; text-transform:uppercase;
+    color:var(--muted-2); display:block; margin-bottom:8px}
+  .opts{display:flex; flex-direction:column; gap:10px}
+  .opt{display:flex; align-items:flex-start; gap:12px; text-align:left; width:100%; cursor:pointer;
+    background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:14px 15px;
+    color:var(--text); font-size:14.5px; font-family:var(--body); line-height:1.4;
+    transition:border-color .12s ease, background .12s ease}
+  .opt:hover:not(:disabled){border-color:var(--line-2); background:var(--bg-3)}
+  .opt:focus-visible{outline:2px solid var(--amber); outline-offset:2px}
+  .opt:disabled{cursor:default}
+  .opt__key{flex:none; width:24px; height:24px; border-radius:7px; border:1px solid var(--line-2);
+    display:grid; place-items:center; font-family:var(--display); font-size:12.5px; font-weight:600; color:var(--muted)}
+  .opt--correct{border-color:var(--green); background:var(--green-dim)}
+  .opt--correct .opt__key{background:var(--green); color:#06210f; border-color:var(--green)}
+  .opt--wrong{border-color:var(--red); background:var(--red-dim)}
+  .opt--wrong .opt__key{background:var(--red); color:#2a0c0a; border-color:var(--red)}
+  .opt--dim{opacity:.55}
+
+  .explain{margin-top:16px; border-left:3px solid var(--amber); background:var(--bg-2);
+    border-radius:0 10px 10px 0; padding:13px 15px; font-size:13.5px; color:var(--muted); display:none}
+  .explain.show{display:block}
+  .explain b{color:var(--text); font-weight:600}
+
+  /* ---- results ---- */
+  .res-head{text-align:center; margin:6px 0 26px}
+  .res-score{font-family:var(--display); font-weight:700; font-size:64px; line-height:1; letter-spacing:-1px}
+  .res-score span{font-size:24px; color:var(--muted-2); font-weight:500}
+  .res-level{font-family:var(--display); font-weight:600; font-size:18px; margin-top:8px; letter-spacing:.3px}
+  .res-verdict{font-size:13.5px; margin-top:8px; color:var(--muted)}
+  .res-verdict b{color:var(--text)}
+
+  /* gauge — élément signature */
+  .gauge{margin:8px 0 26px}
+  .gauge__bands{display:flex; height:38px; border-radius:9px; overflow:hidden; border:1px solid var(--line)}
+  .gauge__band{flex:1; position:relative; display:grid; place-items:center}
+  .gauge__band span{font-family:var(--display); font-size:9.5px; letter-spacing:.4px; text-transform:uppercase;
+    color:rgba(255,255,255,.82); font-weight:600; padding:0 2px; text-align:center}
+  .gauge__scale{display:flex; justify-content:space-between; margin-top:6px;
+    font-family:var(--display); font-size:10.5px; color:var(--muted-2); font-variant-numeric:tabular-nums}
+  .gauge__track{position:relative; height:20px; margin-top:2px}
+  .gauge__marker{position:absolute; top:0; transform:translateX(-50%);
+    transition:left 1.1s cubic-bezier(.2,.8,.2,1); left:0}
+  .gauge__marker::before{content:""; position:absolute; left:50%; top:-2px; transform:translateX(-50%);
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:8px solid var(--amber)}
+  .gauge__marker b{display:block; margin-top:8px; transform:translateX(-50%); position:absolute; left:50%;
+    font-family:var(--display); font-size:11px; color:var(--amber); white-space:nowrap}
+
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:30px 0 10px}
+  .stat{background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:14px; text-align:center}
+  .stat__n{font-family:var(--display); font-weight:700; font-size:22px}
+  .stat__l{font-size:11px; color:var(--muted-2); margin-top:3px; letter-spacing:.3px}
+
+  .review-title{font-family:var(--display); font-weight:600; font-size:15px; margin:28px 0 12px; letter-spacing:.2px}
+  .rev{background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:10px}
+  .rev__q{font-size:14px; font-weight:600; margin-bottom:6px}
+  .rev__line{font-size:13px; color:var(--muted); margin-top:3px}
+  .rev__line.bad{color:#f1948e} .rev__line.good{color:#7fd6a0}
+  .rev__exp{font-size:12.5px; color:var(--muted-2); margin-top:8px; line-height:1.5}
+
+  .best{font-size:12.5px; color:var(--muted-2); text-align:center; margin-top:18px; font-family:var(--display)}
+  .foot{margin-top:30px; font-size:11.5px; color:var(--muted-2); line-height:1.6; text-align:center}
+
+  .hidden{display:none}
+  @media (max-width:480px){
+    .grid{grid-template-columns:1fr} .mod--wide .mod__desc{max-width:100%}
+    .res-score{font-size:54px} .gauge__band span{font-size:8.5px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="top__mark">TOSA</div>
+    <div>
+      <div class="top__t">Desktop — Entraînement</div>
+      <div class="top__sub">Excel · Word · PowerPoint · Outlook</div>
+    </div>
+  </div>
+
+  <!-- ========== ÉCRAN ACCUEIL ========== -->
+  <section id="home">
+    <div class="eyebrow">Choisir un module</div>
+    <div class="grid" id="modGrid"></div>
+
+    <div class="eyebrow" style="margin-top:24px">Réglages</div>
+    <div class="panel">
+      <div class="panel__row">
+        <span class="panel__label">Nombre de questions</span>
+        <div class="seg" id="segCount" role="group" aria-label="Nombre de questions"></div>
+      </div>
+      <div class="panel__row">
+        <span class="panel__label">Correction</span>
+        <div class="seg" id="segMode" role="group" aria-label="Mode de correction">
+          <button data-mode="immediate" aria-pressed="true">Immédiate</button>
+          <button data-mode="end" aria-pressed="false">À la fin</button>
+        </div>
+      </div>
+      <div class="panel__row">
+        <span class="panel__label">Chrono (60 min réelles)</span>
+        <div class="seg" id="segTimer" role="group" aria-label="Chronomètre">
+          <button data-timer="off" aria-pressed="true">Off</button>
+          <button data-timer="on" aria-pressed="false">On</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px"><button class="cta" id="startBtn">Commencer</button></div>
+    <p class="foot">QCM d'entraînement à choix unique. Le score /1000 et le niveau sont une estimation indicative
+      calquée sur le barème TOSA officiel — l'examen réel est adaptatif (35 questions, 60 min).</p>
+  </section>
+
+  <!-- ========== ÉCRAN QUIZ ========== -->
+  <section id="quiz" class="hidden">
+    <div class="qhead">
+      <div class="qhead__l">
+        <span class="pill" id="qModule"></span>
+        <span class="counter" id="qCounter"></span>
+      </div>
+      <span class="timer hidden" id="qTimer"></span>
+    </div>
+    <div class="prog"><div class="prog__fill" id="qProg"></div></div>
+
+    <span class="lvl-tag" id="qLevel"></span>
+    <h2 class="qtext" id="qText"></h2>
+    <div class="opts" id="qOpts"></div>
+    <div class="explain" id="qExplain"></div>
+
+    <div class="cta-row">
+      <button class="cta cta--ghost" id="quitBtn">Quitter</button>
+      <button class="cta" id="nextBtn" disabled>Valider</button>
+    </div>
+  </section>
+
+  <!-- ========== ÉCRAN RÉSULTATS ========== -->
+  <section id="results" class="hidden">
+    <div class="res-head">
+      <div class="res-score" id="rScore">0<span>/1000</span></div>
+      <div class="res-level" id="rLevel"></div>
+      <div class="res-verdict" id="rVerdict"></div>
+    </div>
+
+    <div class="gauge">
+      <div class="gauge__bands" id="gBands"></div>
+      <div class="gauge__scale">
+        <span>1</span><span>350</span><span>550</span><span>725</span><span>875</span><span>1000</span>
+      </div>
+      <div class="gauge__track"><div class="gauge__marker" id="gMarker"><b id="gMarkerLabel"></b></div></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat__n" id="rGood">0</div><div class="stat__l">Bonnes</div></div>
+      <div class="stat"><div class="stat__n" id="rBad">0</div><div class="stat__l">Erreurs</div></div>
+      <div class="stat"><div class="stat__n" id="rRate">0%</div><div class="stat__l">Réussite</div></div>
+    </div>
+    <div class="best" id="rBest"></div>
+
+    <div class="review-title" id="revTitle"></div>
+    <div id="revList"></div>
+
+    <div class="cta-row">
+      <button class="cta cta--ghost" id="homeBtn">Accueil</button>
+      <button class="cta" id="retryBtn">Rejouer</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ================= DONNÉES ================= */
+const MODULES = {
+  excel:   {name:"Excel",      color:"var(--excel)",   desc:"Formules, RECHERCHEV, TCD, mise en forme conditionnelle"},
+  word:    {name:"Word",       color:"var(--word)",    desc:"Styles, sections, table des matières, publipostage"},
+  ppt:     {name:"PowerPoint", color:"var(--ppt)",     desc:"Masque, transitions, animations, diaporama"},
+  outlook: {name:"Outlook",    color:"var(--outlook)", desc:"Mails, règles, calendrier, réunions, contacts"},
+};
+
+// level: "F" = fondamental/courant, "M" = avancé (pondéré +)
+const BANK = {
+  excel:[
+    {l:"F",q:"Pour figer une cellule dans une formule que l'on recopie (référence absolue), quel symbole utilise-t-on ?",
+     o:["%A%1","$A$1","#A#1","&A&1"],a:1,e:"Le <b>$</b> verrouille la colonne et/ou la ligne. <b>$A$1</b> = référence absolue, <b>A$1</b> fige la ligne, <b>$A1</b> fige la colonne."},
+    {l:"F",q:"Quelle fonction additionne uniquement les cellules qui répondent à un critère ?",
+     o:["SOMME","SOMME.SI","NB.SI","MOYENNE"],a:1,e:"<b>SOMME.SI(plage ; critère ; somme_plage)</b>. NB.SI compte, MOYENNE.SI fait la moyenne conditionnelle."},
+    {l:"F",q:"Dans RECHERCHEV, la valeur cherchée doit se trouver dans…",
+     o:["la dernière colonne du tableau","n'importe quelle colonne","la première colonne du tableau","la première ligne du tableau"],a:2,
+     e:"RECHERCHEV cherche toujours dans la <b>1re colonne</b> de la table et renvoie une valeur à droite. Pour chercher à gauche : INDEX+EQUIV ou RECHERCHEX."},
+    {l:"M",q:"Quel duo de fonctions permet une recherche dans n'importe quelle direction (y compris vers la gauche) ?",
+     o:["SI + ET","INDEX + EQUIV","NB + RANG","CHOISIR + COLONNE"],a:1,
+     e:"<b>INDEX(plage ; ligne ; colonne)</b> combiné à <b>EQUIV()</b> qui trouve la position. Plus souple que RECHERCHEV. RECHERCHEX (2021) fait aussi cela."},
+    {l:"F",q:"Que signifie l'affichage <b>########</b> dans une cellule ?",
+     o:["Une erreur de formule","La colonne est trop étroite","Une référence circulaire","Un format texte"],a:1,
+     e:"Ce n'est pas une erreur : la <b>colonne est trop étroite</b> pour afficher le nombre. Il suffit de l'élargir."},
+    {l:"F",q:"Quelle erreur s'affiche lors d'une division par zéro ?",
+     o:["#NOM?","#VALEUR!","#DIV/0!","#REF!"],a:2,
+     e:"<b>#DIV/0!</b> = division par zéro. #REF! = référence supprimée, #NOM? = nom mal écrit, #VALEUR! = mauvais type d'argument."},
+    {l:"F",q:"Quel raccourci insère une Somme automatique sur la cellule active ?",
+     o:["Ctrl + S","Alt + =","Ctrl + +","Maj + S"],a:1,
+     e:"<b>Alt + =</b> insère =SOMME() sur la plage adjacente détectée automatiquement."},
+    {l:"M",q:"Quelle fonction (Excel 2019+) teste plusieurs conditions sans imbriquer de multiples SI ?",
+     o:["SI.MULTIPLE","SI.CONDITIONS","SOMMEPROD","SI.ENS"],a:1,
+     e:"<b>SI.CONDITIONS</b> (IFS) évalue une suite de tests et renvoie la valeur du premier VRAI — bien plus lisible que des SI imbriqués."},
+    {l:"F",q:"Pour appliquer automatiquement une couleur aux cellules dépassant un seuil, on utilise…",
+     o:["la mise en forme conditionnelle","un filtre","un format personnalisé","la validation des données"],a:0,
+     e:"La <b>mise en forme conditionnelle</b> (onglet Accueil) applique un style selon des règles : seuils, barres de données, jeux d'icônes…"},
+    {l:"F",q:"Quel opérateur assemble deux textes (concaténation) dans une formule ?",
+     o:["+","&","#","~"],a:1,
+     e:"L'opérateur <b>&</b> : =A1&\" \"&B1. On peut aussi utiliser CONCAT() ou JOINDRE.TEXTE()."},
+    {l:"M",q:"Que fait « Figer les volets » (onglet Affichage) ?",
+     o:["Verrouille les cellules en lecture seule","Garde des lignes/colonnes visibles au défilement","Empêche la modification des formules","Masque les volets latéraux"],a:1,
+     e:"Cela <b>maintient à l'écran</b> les premières lignes/colonnes (les en-têtes) pendant qu'on fait défiler le reste du tableau."},
+    {l:"M",q:"Un tableau croisé dynamique (TCD) sert principalement à…",
+     o:["mettre en forme un tableau","synthétiser et regrouper de grandes données","protéger une feuille","créer un graphique 3D"],a:1,
+     e:"Le <b>TCD</b> (Insertion ▸ Tableau croisé dynamique) agrège, regroupe et croise des données pour les analyser rapidement, sans formule."},
+    {l:"F",q:"Quelle fonction renvoie le nombre de cellules non vides d'une plage contenant du texte ou des nombres ?",
+     o:["NB","NBVAL","SOMME","NB.VIDE"],a:1,
+     e:"<b>NBVAL</b> compte toutes les cellules non vides. <b>NB</b> ne compte que les nombres ; NB.VIDE compte les vides."},
+    {l:"M",q:"Dans la référence mixte <b>A$1</b>, qu'est-ce qui est figé lors d'une recopie ?",
+     o:["La colonne A","La ligne 1","Les deux","Rien"],a:1,
+     e:"Le $ est devant le 1 : c'est la <b>ligne</b> qui est verrouillée. La colonne, elle, s'adapte à la recopie."},
+    {l:"M",q:"Quel outil permet de limiter la saisie d'une cellule à une liste déroulante de valeurs ?",
+     o:["La mise en forme conditionnelle","La validation des données","Le filtre automatique","La protection de feuille"],a:1,
+     e:"<b>Données ▸ Validation des données</b> ▸ Autoriser : Liste. On y saisit les valeurs autorisées ou une plage source."},
+  ],
+  word:[
+    {l:"F",q:"À quoi sert un « style » (Titre 1, Normal…) dans Word ?",
+     o:["À appliquer un jeu cohérent de mises en forme en un clic","À traduire le document","À compter les mots","À insérer une image"],a:0,
+     e:"Un <b>style</b> regroupe police, taille, couleur, espacement… Le modifier met à jour tout le texte qui l'utilise — base d'un document homogène."},
+    {l:"M",q:"Sur quoi repose une table des matières automatique ?",
+     o:["Sur les sauts de page","Sur les styles de titre (Titre 1, 2…)","Sur les signets manuels","Sur la numérotation des pages"],a:1,
+     e:"Word génère la table à partir des <b>styles de titre</b>. Onglet Références ▸ Table des matières, puis Mettre à jour si le texte change."},
+    {l:"M",q:"Quelle insertion permet d'avoir une orientation ou des en-têtes différents selon les parties du document ?",
+     o:["Un saut de page","Un saut de section","Un saut de colonne","Un saut de ligne"],a:1,
+     e:"Le <b>saut de section</b> (Mise en page ▸ Sauts de pages) isole une partie : on peut y changer orientation, marges, en-têtes/pieds, numérotation."},
+    {l:"M",q:"Le publipostage (fusion et publipostage) sert à…",
+     o:["fusionner deux documents Word","fusionner un document avec une source de données","compresser le fichier","corriger l'orthographe"],a:1,
+     e:"Le <b>publipostage</b> combine un document type avec une source (Excel, contacts…) pour générer des lettres/étiquettes/mails personnalisés."},
+    {l:"F",q:"Quel raccourci met le texte sélectionné en gras (version française) ?",
+     o:["Ctrl + B","Ctrl + G","Ctrl + I","Ctrl + S"],a:1,
+     e:"Dans Word FR, <b>Ctrl + G</b> = Gras. Ctrl + I = Italique, Ctrl + U = Souligné."},
+    {l:"F",q:"Quel bouton affiche les marques de paragraphe (¶) et autres caractères non imprimables ?",
+     o:["Le bouton « Afficher tout » (¶)","L'aperçu avant impression","Le mode Lecture","Le zoom"],a:0,
+     e:"Le bouton <b>¶ « Afficher tout »</b> (Accueil) ou <b>Ctrl + *</b> révèle espaces, tabulations et marques de paragraphe — utile pour la mise en page."},
+    {l:"F",q:"Dans quel onglet active-t-on le « Suivi des modifications » ?",
+     o:["Insertion","Références","Révision","Affichage"],a:2,
+     e:"Onglet <b>Révision</b> ▸ Suivi des modifications. Chaque ajout/suppression est enregistré pour relecture et validation."},
+    {l:"F",q:"Où insère-t-on une note de bas de page ?",
+     o:["Onglet Insertion","Onglet Références","Onglet Affichage","Onglet Création"],a:1,
+     e:"Onglet <b>Références ▸ Insérer une note de bas de page</b>. La numérotation se gère automatiquement."},
+    {l:"M",q:"Que produit le raccourci <b>Ctrl + Entrée</b> ?",
+     o:["Un saut de ligne","Un saut de page","Un saut de section","Un nouveau paragraphe"],a:1,
+     e:"<b>Ctrl + Entrée</b> insère un <b>saut de page</b> manuel, plus propre que d'appuyer plusieurs fois sur Entrée."},
+    {l:"M",q:"Comment empêcher la modification d'un document tout en autorisant la lecture ?",
+     o:["Révision ▸ Restreindre la modification","Fichier ▸ Compresser","Affichage ▸ Mode Lecture","Insertion ▸ Protection"],a:0,
+     e:"<b>Révision ▸ Restreindre la modification</b> permet de verrouiller le document (lecture seule, commentaires…) éventuellement avec mot de passe."},
+    {l:"F",q:"Pour disposer le texte sur deux colonnes type journal, on utilise…",
+     o:["Insertion ▸ Tableau","Mise en page ▸ Colonnes","Accueil ▸ Paragraphe","Création ▸ Thèmes"],a:1,
+     e:"<b>Mise en page ▸ Colonnes</b>. On peut combiner avec un saut de section pour n'appliquer les colonnes qu'à une partie."},
+    {l:"M",q:"Le retrait de première ligne d'un paragraphe se règle…",
+     o:["avec la barre d'espace","via les marqueurs de la règle ou la boîte Paragraphe","en changeant la police","avec un saut de section"],a:1,
+     e:"On utilise les <b>marqueurs de la règle</b> ou Accueil ▸ Paragraphe ▸ Retrait ▸ Spécial : Première ligne. Éviter les espaces/tabulations à répétition."},
+  ],
+  ppt:[
+    {l:"M",q:"Quel mode permet de modifier en une fois la mise en forme de toutes les diapositives ?",
+     o:["Le mode Trieuse","Le masque des diapositives","Le mode Lecture","Le mode Plan"],a:1,
+     e:"<b>Affichage ▸ Masque des diapositives</b> : on y règle polices, couleurs, logos et dispositions appliqués à tout le diaporama."},
+    {l:"F",q:"Quelle est la différence entre une transition et une animation ?",
+     o:["Aucune","La transition agit entre deux diapos, l'animation sur un objet","La transition agit sur le texte, l'animation sur l'image","L'animation s'applique au diaporama entier"],a:1,
+     e:"La <b>transition</b> est l'effet de passage <b>d'une diapo à l'autre</b> ; l'<b>animation</b> anime un <b>objet</b> (texte, image) à l'intérieur d'une diapo."},
+    {l:"F",q:"Quelle touche lance le diaporama depuis la première diapositive ?",
+     o:["F2","F5","F9","Échap"],a:1,
+     e:"<b>F5</b> démarre le diaporama au début. <b>Maj + F5</b> le lance depuis la diapo active."},
+    {l:"M",q:"Le « mode Présentateur » permet surtout de…",
+     o:["réduire la taille du fichier","voir ses notes et la diapo suivante pendant la projection","verrouiller les diapos","convertir en PDF"],a:1,
+     e:"Le <b>mode Présentateur</b> affiche sur votre écran les <b>notes</b>, la diapo suivante et un minuteur, pendant que le public ne voit que la présentation."},
+    {l:"F",q:"À quoi sert une « disposition » (layout) de diapositive ?",
+     o:["À définir l'agencement des espaces réservés","À changer la langue","À compresser les images","À ajouter une transition"],a:0,
+     e:"Une <b>disposition</b> prédéfinit l'emplacement des espaces réservés (titre, contenu, image…). On la choisit via Accueil ▸ Disposition."},
+    {l:"M",q:"Comment regrouper logiquement des diapositives dans une longue présentation ?",
+     o:["Avec des sections","Avec des signets","Avec des calques","Avec des onglets"],a:0,
+     e:"Les <b>sections</b> (clic droit dans le volet ▸ Ajouter une section) regroupent et permettent de réorganiser ou masquer des blocs de diapos."},
+    {l:"F",q:"Dans quel onglet règle-t-on le minutage et l'enchaînement automatique des diapos ?",
+     o:["Transitions","Animations","Diaporama","Affichage"],a:2,
+     e:"L'onglet <b>Diaporama</b> contient « Vérifier le minutage » et « Enregistrer le diaporama ». La durée par diapo se définit aussi dans Transitions."},
+    {l:"M",q:"Qu'est-ce qu'un « déclencheur » (trigger) d'animation ?",
+     o:["Une transition sonore","Une animation lancée au clic sur un objet précis","Un raccourci clavier","Un effet de texte"],a:1,
+     e:"Un <b>déclencheur</b> fait démarrer une animation quand on clique sur un objet désigné — utile pour des diapos interactives (quiz, boutons)."},
+    {l:"F",q:"Un « thème » dans PowerPoint définit…",
+     o:["le nombre de diapos","le jeu de couleurs, polices et effets","la durée du diaporama","l'ordre des sections"],a:1,
+     e:"Un <b>thème</b> (onglet Création) applique un ensemble cohérent de <b>couleurs, polices et effets</b> à toute la présentation."},
+    {l:"M",q:"Pour aligner précisément plusieurs objets entre eux, on utilise…",
+     o:["Format ▸ Aligner","Insertion ▸ Formes","Création ▸ Thèmes","Transitions ▸ Effets"],a:0,
+     e:"Après sélection des objets : <b>Format de la forme ▸ Aligner</b> (gauche, centre, répartir…). Les repères intelligents aident aussi au survol."},
+    {l:"F",q:"Quel mode d'affichage facilite le réordonnancement rapide de toutes les diapos en vignettes ?",
+     o:["Mode Plan","Trieuse de diapositives","Mode Lecture","Mode Masque"],a:1,
+     e:"La <b>Trieuse de diapositives</b> (onglet Affichage) montre toutes les vignettes : idéal pour glisser-déposer et réorganiser."},
+  ],
+  outlook:[
+    {l:"F",q:"Quelle est la différence entre un rendez-vous et une réunion dans le calendrier ?",
+     o:["Aucune","La réunion comporte des participants invités","Le rendez-vous dure plus longtemps","La réunion est privée"],a:1,
+     e:"Un <b>rendez-vous</b> ne concerne que vous ; une <b>réunion</b> envoie des invitations à des <b>participants</b> et gère leurs réponses."},
+    {l:"F",q:"À quoi servent les « règles » dans Outlook ?",
+     o:["À chiffrer les mails","À automatiser le tri des messages","À créer une signature","À planifier l'envoi"],a:1,
+     e:"Une <b>règle</b> applique des actions automatiques (déplacer, catégoriser, marquer…) selon des conditions sur les messages entrants ou sortants."},
+    {l:"F",q:"Le champ <b>Cci</b> (copie carbone invisible) permet…",
+     o:["d'ajouter une pièce jointe","de masquer un destinataire aux autres","de répondre à tous","de marquer comme urgent"],a:1,
+     e:"Les destinataires en <b>Cci</b> reçoivent le message sans que les autres voient leur adresse — utile pour les envois groupés discrets."},
+    {l:"F",q:"Que fait l'indicateur de suivi (le petit drapeau) sur un message ?",
+     o:["Le supprime","Le marque pour un suivi/rappel","L'archive","Le déplace en spam"],a:1,
+     e:"Le <b>drapeau de suivi</b> signale un message à traiter ; on peut y associer une échéance et un rappel qui apparaît dans la liste des tâches."},
+    {l:"M",q:"Qu'est-ce qu'un « dossier de recherche » (search folder) ?",
+     o:["Un dossier de sauvegarde","Une vue virtuelle regroupant des messages selon des critères","La corbeille","Un dossier partagé"],a:1,
+     e:"Un <b>dossier de recherche</b> n'a pas de contenu propre : il affiche dynamiquement les messages (de tous les dossiers) qui correspondent à des critères."},
+    {l:"F",q:"Où crée-t-on une signature automatique de courrier ?",
+     o:["Fichier ▸ Options ▸ Courrier ▸ Signatures","Affichage ▸ Volet de lecture","Accueil ▸ Catégoriser","Envoi/Réception"],a:0,
+     e:"<b>Fichier ▸ Options ▸ Courrier ▸ Signatures</b>. On peut définir des signatures différentes pour les nouveaux messages et les réponses."},
+    {l:"M",q:"Comment classer visuellement des messages par couleur dans Outlook ?",
+     o:["Avec les catégories","Avec les drapeaux","Avec les règles uniquement","Avec les dossiers de recherche"],a:0,
+     e:"Les <b>catégories</b> attribuent une couleur (et un libellé) aux messages, rendez-vous ou contacts pour les repérer et les filtrer."},
+    {l:"M",q:"La fonction « Réponses automatiques » (gestionnaire d'absence) sert à…",
+     o:["transférer tous les mails","envoyer un message automatique pendant une absence","supprimer les mails entrants","bloquer un expéditeur"],a:1,
+     e:"Les <b>Réponses automatiques</b> renvoient un message type (absence du bureau) pendant une période définie, avec des textes distincts interne/externe."},
+    {l:"F",q:"Comment signaler qu'un courrier est urgent à son destinataire ?",
+     o:["Le mettre en gras","Définir une importance « Haute »","L'envoyer en Cci","Ajouter une catégorie rouge"],a:1,
+     e:"Le bouton <b>Importance haute</b> (point d'exclamation) ajoute un marqueur visible dans la boîte du destinataire."},
+    {l:"M",q:"Lorsqu'on reçoit une invitation à une réunion, on peut généralement…",
+     o:["uniquement accepter","accepter, refuser ou proposer une nouvelle heure","seulement supprimer","la transférer obligatoirement"],a:1,
+     e:"On peut <b>Accepter</b>, <b>Refuser</b>, répondre <b>Provisoirement</b> ou <b>proposer une nouvelle heure</b> ; l'organisateur reçoit la réponse."},
+    {l:"M",q:"Comment permettre à un collègue de gérer votre calendrier à votre place ?",
+     o:["Lui transférer chaque mail","Lui donner une délégation / un accès partagé","Créer une règle","Activer le mode hors connexion"],a:1,
+     e:"La <b>délégation</b> (ou le partage du calendrier) accorde des droits de lecture/écriture à une autre personne sur vos éléments."},
+  ],
+};
+
+/* ================= ÉTAT ================= */
+const state = {module:null, count:10, mode:"immediate", timer:false,
+  questions:[], idx:0, answers:[], answered:false, timeLeft:0, timerId:null};
+
+const $ = s => document.querySelector(s);
+const screens = {home:$("#home"), quiz:$("#quiz"), results:$("#results")};
+function show(name){for(const k in screens) screens[k].classList.toggle("hidden", k!==name);
+  window.scrollTo({top:0,behavior:"instant"});}
+
+/* ----- best scores (localStorage : navigateur, GitHub Pages, WebView) ----- */
+function getBest(mod){
+  try{ const v = localStorage.getItem("best:"+mod); return v ? JSON.parse(v) : null; }
+  catch(e){ return null; }
+}
+function setBest(mod,score){
+  try{ localStorage.setItem("best:"+mod, JSON.stringify(score)); } catch(e){}
+}
+
+/* ================= ACCUEIL ================= */
+function buildHome(){
+  const grid = $("#modGrid"); grid.innerHTML="";
+  for(const key in MODULES){
+    const m=MODULES[key];
+    const total=BANK[key].length;
+    const b=document.createElement("button");
+    b.className="mod"; b.style.setProperty("--c",m.color); b.dataset.module=key;
+    b.innerHTML=`<span class="mod__bar"></span>
+      <div class="mod__name"><span class="mod__dot"></span>${m.name}</div>
+      <div class="mod__desc">${m.desc}</div>
+      <div class="mod__meta">${total} questions</div>`;
+    b.addEventListener("click",()=>selectModule(key,b));
+    grid.appendChild(b);
+  }
+  // carte Mix / examen blanc
+  const mix=document.createElement("button");
+  mix.className="mod mod--wide"; mix.style.setProperty("--c","var(--mix)"); mix.dataset.module="mix";
+  mix.innerHTML=`<span class="mod__bar"></span>
+    <div class="mod__name"><span class="mod__dot"></span>Examen blanc (Mix)</div>
+    <div class="mod__desc">Questions tirées des 4 modules, dans des proportions variées — comme une vraie session.</div>
+    <div class="mod__meta">les 4 logiciels mélangés</div>`;
+  mix.addEventListener("click",()=>selectModule("mix",mix));
+  grid.appendChild(mix);
+
+  buildSeg("#segCount",[5,10,20,35],"count",v=>{state.count=v;});
+  $("#segCount").querySelectorAll("button").forEach(b=>{
+    if(+b.dataset.val===state.count) b.setAttribute("aria-pressed","true");});
+}
+function buildSeg(sel,vals,attr,cb){
+  const seg=$(sel); seg.innerHTML="";
+  vals.forEach((v,i)=>{
+    const b=document.createElement("button");
+    b.textContent=v; b.dataset.val=v; b.setAttribute("aria-pressed", i===1?"true":"false");
+    b.addEventListener("click",()=>{
+      seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true"); cb(v);
+    });
+    seg.appendChild(b);
+  });
+}
+function selectModule(key,el){
+  state.module=key;
+  document.querySelectorAll(".mod").forEach(m=>m.style.borderColor="");
+  el.style.borderColor=MODULES[key]?MODULES[key].color:"var(--mix)";
+}
+// segments mode / timer
+$("#segMode").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+  $("#segMode").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); state.mode=b.dataset.mode;
+}));
+$("#segTimer").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+  $("#segTimer").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); state.timer=(b.dataset.timer==="on");
+}));
+
+/* ================= TIRAGE DES QUESTIONS ================= */
+function shuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
+function pickQuestions(){
+  let pool=[];
+  if(state.module==="mix"){
+    for(const k in BANK) pool=pool.concat(BANK[k].map(q=>({...q,mod:k})));
+  }else{
+    pool=BANK[state.module].map(q=>({...q,mod:state.module}));
+  }
+  pool=shuffle(pool).slice(0, Math.min(state.count, pool.length));
+  // mélange aussi les options en gardant l'index de la bonne réponse
+  return pool.map(q=>{
+    const order=shuffle([0,1,2,3]);
+    return {...q, o:order.map(i=>q.o[i]), a:order.indexOf(q.a)};
+  });
+}
+
+/* ================= QUIZ ================= */
+function startQuiz(){
+  if(!state.module){flashNeedModule(); return;}
+  state.questions=pickQuestions(); state.idx=0; state.answers=[]; state.answered=false;
+  show("quiz");
+  if(state.timer){
+    state.timeLeft=Math.round(60*60*(state.questions.length/35)); // 60 min pour 35 q
+    $("#qTimer").classList.remove("hidden"); tickTimer();
+    state.timerId=setInterval(tickTimer,1000);
+  }else{$("#qTimer").classList.add("hidden");}
+  renderQuestion();
+}
+function flashNeedModule(){
+  const e=$("#startBtn"); const old=e.textContent;
+  e.textContent="Choisis d'abord un module ↑"; e.style.background="var(--red)"; e.style.color="#fff";
+  setTimeout(()=>{e.textContent=old; e.style.background=""; e.style.color="";},1400);
+}
+function tickTimer(){
+  const m=Math.floor(state.timeLeft/60), s=state.timeLeft%60;
+  const t=$("#qTimer"); t.textContent=`${m}:${String(s).padStart(2,"0")}`;
+  t.classList.toggle("timer--low", state.timeLeft<=30);
+  if(state.timeLeft<=0){clearInterval(state.timerId); finish();} state.timeLeft--;
+}
+function renderQuestion(){
+  const q=state.questions[state.idx];
+  const mod=MODULES[q.mod];
+  const pill=$("#qModule");
+  pill.innerHTML=`<span class="pill__dot"></span>${mod.name}`;
+  pill.style.setProperty("--c",mod.color); pill.style.borderColor=mod.color;
+  $("#qCounter").textContent=`Question ${state.idx+1} / ${state.questions.length}`;
+  $("#qProg").style.width=`${(state.idx/state.questions.length)*100}%`;
+  $("#qLevel").textContent = q.l==="M" ? "Niveau avancé" : "Niveau courant";
+  $("#qText").innerHTML=q.q;
+  const keys=["A","B","C","D"];
+  const opts=$("#qOpts"); opts.innerHTML="";
+  q.o.forEach((text,i)=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.dataset.i=i;
+    b.innerHTML=`<span class="opt__key">${keys[i]}</span><span>${text}</span>`;
+    b.addEventListener("click",()=>chooseOption(i));
+    opts.appendChild(b);
+  });
+  $("#qExplain").classList.remove("show"); $("#qExplain").innerHTML="";
+  state.answered=false; state.selected=null;
+  const nb=$("#nextBtn"); nb.disabled=true; nb.textContent="Valider";
+}
+function chooseOption(i){
+  if(state.answered && state.mode==="immediate") return;
+  state.selected=i;
+  document.querySelectorAll(".opt").forEach(o=>o.style.borderColor=(+o.dataset.i===i)?"var(--amber)":"");
+  $("#nextBtn").disabled=false;
+  if(state.mode==="immediate"){revealAnswer();}
+}
+function revealAnswer(){
+  const q=state.questions[state.idx];
+  state.answered=true;
+  const correct = state.selected===q.a;
+  state.answers[state.idx]={sel:state.selected, correct, q};
+  document.querySelectorAll(".opt").forEach(o=>{
+    const i=+o.dataset.i; o.disabled=true; o.style.borderColor="";
+    if(i===q.a) o.classList.add("opt--correct");
+    else if(i===state.selected) o.classList.add("opt--wrong");
+    else o.classList.add("opt--dim");
+  });
+  const ex=$("#qExplain");
+  ex.innerHTML=(correct?"<b style='color:#7fd6a0'>Correct.</b> ":"<b style='color:#f1948e'>Incorrect.</b> ")+q.e;
+  ex.classList.add("show");
+  $("#nextBtn").textContent = (state.idx===state.questions.length-1)?"Voir mon score":"Question suivante";
+  $("#nextBtn").disabled=false;
+}
+$("#nextBtn").addEventListener("click",()=>{
+  const q=state.questions[state.idx];
+  if(state.mode==="end"){
+    if(state.selected===null) return;
+    state.answers[state.idx]={sel:state.selected, correct:state.selected===q.a, q};
+  }else if(!state.answered){
+    revealAnswer(); return; // 1er clic = valider, 2e = suivant
+  }
+  if(state.idx<state.questions.length-1){state.idx++; renderQuestion();}
+  else finish();
+});
+$("#quitBtn").addEventListener("click",()=>{
+  if(state.timerId) clearInterval(state.timerId); show("home");
+});
+
+/* ================= RÉSULTATS ================= */
+const BANDS=[
+  {n:"Initial",c:"var(--b-initial)",min:1,max:350},
+  {n:"Basique",c:"var(--b-basique)",min:351,max:550},
+  {n:"Opérationnel",c:"var(--b-operationnel)",min:551,max:725},
+  {n:"Avancé",c:"var(--b-avance)",min:726,max:875},
+  {n:"Expert",c:"var(--b-expert)",min:876,max:1000},
+];
+function levelFor(score){return BANDS.find(b=>score>=b.min && score<=b.max) || BANDS[0];}
+
+function finish(){
+  if(state.timerId) clearInterval(state.timerId);
+  // pondération : question avancée (M) vaut 1.6, courante (F) vaut 1
+  let earned=0, max=0, good=0;
+  state.answers.forEach(a=>{
+    const w = a.q.l==="M"?1.6:1; max+=w;
+    if(a.correct){earned+=w; good++;}
+  });
+  // questions non répondues (mode fin + quitté par chrono) comptent comme fausses
+  state.questions.forEach((q,i)=>{ if(!state.answers[i]){const w=q.l==="M"?1.6:1; max+=w; state.answers[i]={sel:null,correct:false,q};}});
+  const score = max>0 ? Math.max(1, Math.round((earned/max)*1000)) : 1;
+  const total=state.questions.length;
+  const bad=total-good;
+  const rate=Math.round((good/total)*100);
+  const lvl=levelFor(score);
+
+  $("#rScore").innerHTML=`${score}<span>/1000</span>`;
+  $("#rLevel").textContent=`Niveau ${lvl.n}`;
+  $("#rLevel").style.color=lvl.c;
+  const pass = score>=351;
+  $("#rVerdict").innerHTML = pass
+    ? `Au-dessus du seuil de certification (351) pour ce module. <b>Continue.</b>`
+    : `Sous le seuil de certification (351). <b>À retravailler.</b>`;
+
+  $("#rGood").textContent=good; $("#rBad").textContent=bad; $("#rRate").textContent=rate+"%";
+
+  // gauge
+  buildGauge(score, lvl);
+
+  // best score
+  const modKey=state.module;
+  const prev=getBest(modKey);
+  if(!prev || score>prev){setBest(modKey,score);
+    $("#rBest").textContent = prev ? `Nouveau record sur ce module (ancien : ${prev}).` : `Premier score enregistré sur ce module.`;
+  }else{
+    $("#rBest").textContent=`Ton record sur ce module : ${prev}.`;
+  }
+
+  // revue des erreurs
+  buildReview();
+  show("results");
+}
+function buildGauge(score, lvl){
+  const bands=$("#gBands"); bands.innerHTML="";
+  BANDS.forEach(b=>{
+    const span=b.n==="Opérationnel"?"Opér.":b.n;
+    const d=document.createElement("div");
+    d.className="gauge__band"; d.style.background=b.c; d.innerHTML=`<span>${span}</span>`;
+    bands.appendChild(d);
+  });
+  const marker=$("#gMarker");
+  $("#gMarkerLabel").textContent=score;
+  marker.style.left="0%";
+  // position : score sur l'échelle 1..1000, alignée sur la barre des bandes
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    marker.style.left=((score/1000)*100)+"%";
+  }));
+}
+function buildReview(){
+  const wrong=state.answers.filter(a=>!a.correct);
+  const title=$("#revTitle"); const list=$("#revList"); list.innerHTML="";
+  if(wrong.length===0){
+    title.textContent="Sans-faute — rien à revoir.";
+    return;
+  }
+  title.textContent=`À revoir (${wrong.length})`;
+  const keys=["A","B","C","D"];
+  wrong.forEach(a=>{
+    const q=a.q;
+    const yourAns = a.sel===null ? "—" : `${keys[a.sel]}. ${q.o[a.sel]}`;
+    const goodAns = `${keys[q.a]}. ${q.o[q.a]}`;
+    const d=document.createElement("div"); d.className="rev";
+    d.innerHTML=`<div class="rev__q">[${MODULES[q.mod].name}] ${q.q}</div>
+      <div class="rev__line bad">Ta réponse : ${yourAns}</div>
+      <div class="rev__line good">Bonne réponse : ${goodAns}</div>
+      <div class="rev__exp">${q.e}</div>`;
+    list.appendChild(d);
+  });
+}
+$("#homeBtn").addEventListener("click",()=>show("home"));
+$("#retryBtn").addEventListener("click",startQuiz);
+$("#startBtn").addEventListener("click",startQuiz);
+
+/* ================= INIT ================= */
+buildHome();
+
+/* ----- service worker (hors-ligne) — chemin relatif pour GitHub Pages ----- */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    try{ navigator.serviceWorker.register("sw.js"); }catch(e){}
+  });
+}
+</script>
+</body>
+</html>
