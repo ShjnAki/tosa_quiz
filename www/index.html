@@ -333,6 +333,66 @@ const BANK = {
     {l:"M",q:"Quel outil permet de limiter la saisie d'une cellule à une liste déroulante de valeurs ?",
      o:["La mise en forme conditionnelle","La validation des données","Le filtre automatique","La protection de feuille"],a:1,
      e:"<b>Données ▸ Validation des données</b> ▸ Autoriser : Liste. On y saisit les valeurs autorisées ou une plage source."},
+    {l:"F",q:"Quel raccourci enregistre le classeur en cours ?",
+     o:["Ctrl + S","Ctrl + P","Ctrl + Z","F12"],a:0,
+     e:"<b>Ctrl + S</b> enregistre. <b>F12</b> ouvre « Enregistrer sous », Ctrl + P imprime, Ctrl + Z annule la dernière action."},
+    {l:"F",q:"Pour faire référence à la cellule A1 d'une autre feuille nommée « Data », on écrit…",
+     o:["Data-A1","Data!A1","Data:A1","Data.A1"],a:1,
+     e:"La syntaxe est <b>NomFeuille!Cellule</b>, donc <b>Data!A1</b>. Le point d'exclamation sépare la feuille de la cellule."},
+    {l:"F",q:"Quelle fonction calcule la moyenne arithmétique d'une plage de nombres ?",
+     o:["MEDIANE","MOYENNE","SOMME","MODE"],a:1,
+     e:"<b>MOYENNE(plage)</b> renvoie la moyenne. MEDIANE donne la valeur centrale, MODE la plus fréquente."},
+    {l:"F",q:"Quelle fonction compte les cellules d'une plage qui respectent un critère ?",
+     o:["NB","NB.SI","NBVAL","SOMME.SI"],a:1,
+     e:"<b>NB.SI(plage ; critère)</b> compte selon une condition. SOMME.SI additionne, NBVAL compte les cellules non vides."},
+    {l:"M",q:"Quelle fonction additionne des cellules selon plusieurs critères à la fois ?",
+     o:["SOMME.SI","SOMME.SI.ENS","SOMMEPROD","NB.SI.ENS"],a:1,
+     e:"<b>SOMME.SI.ENS(plage_somme ; plage1 ; critère1 ; …)</b> gère plusieurs conditions. NB.SI.ENS fait de même en comptant."},
+    {l:"F",q:"Où trie-t-on un tableau par ordre croissant ou décroissant ?",
+     o:["Onglet Données ▸ Trier","Onglet Insertion","Onglet Affichage","Onglet Révision"],a:0,
+     e:"<b>Données ▸ Trier</b> (ou les boutons A→Z / Z→A). On peut trier sur plusieurs niveaux de colonnes."},
+    {l:"F",q:"Que permet le filtre automatique (Données ▸ Filtrer) ?",
+     o:["Supprimer définitivement des lignes","N'afficher que les lignes répondant à un critère","Verrouiller les cellules","Créer un graphique"],a:1,
+     e:"Le <b>filtre</b> masque temporairement les lignes hors critère, sans rien supprimer. On le retire pour tout réafficher."},
+    {l:"M",q:"Comment retirer rapidement les lignes en double d'un tableau ?",
+     o:["Données ▸ Supprimer les doublons","Accueil ▸ Effacer","Données ▸ Filtrer","Révision ▸ Comparer"],a:0,
+     e:"<b>Données ▸ Supprimer les doublons</b> élimine les lignes identiques selon les colonnes cochées."},
+    {l:"M",q:"Quelle fonction (Excel 2021/365) cherche dans n'importe quel sens et remplace avantageusement RECHERCHEV ?",
+     o:["RECHERCHEH","RECHERCHEX","RECHERCHE","DECALER"],a:1,
+     e:"<b>RECHERCHEX</b> (XLOOKUP) cherche à gauche comme à droite, gère les erreurs et ne dépend pas d'un numéro de colonne."},
+    {l:"M",q:"Quelle fonction affiche une valeur de remplacement quand une formule renvoie une erreur ?",
+     o:["SI","SIERREUR","ESTERREUR","SIVIDE"],a:1,
+     e:"<b>SIERREUR(formule ; valeur_si_erreur)</b> renvoie la 2e valeur si la formule échoue (#N/A, #DIV/0!…)."},
+    {l:"F",q:"Quelles fonctions renvoient la plus grande et la plus petite valeur d'une plage ?",
+     o:["GRAND et PETIT","MAX et MIN","SUP et INF","HAUT et BAS"],a:1,
+     e:"<b>MAX</b> donne le maximum, <b>MIN</b> le minimum. GRANDE.VALEUR/PETITE.VALEUR donnent le n-ième rang."},
+    {l:"F",q:"À quoi sert la poignée de recopie (petit carré en bas à droite de la cellule) ?",
+     o:["À supprimer la cellule","À recopier ou incrémenter le contenu vers les cellules voisines","À changer la couleur","À fusionner des cellules"],a:1,
+     e:"En la tirant, Excel <b>recopie la formule</b> (références adaptées) ou <b>incrémente</b> une série (1, 2, 3…)."},
+    {l:"M",q:"Que fait l'outil « Valeur cible » (Données ▸ Analyse de scénarios) ?",
+     o:["Trouve la valeur d'entrée pour obtenir un résultat voulu","Protège une plage","Crée un TCD","Trie les données"],a:0,
+     e:"La <b>Valeur cible</b> calcule à rebours : quelle valeur d'entrée faut-il pour qu'une formule atteigne un résultat fixé."},
+    {l:"F",q:"Quelle fonction arrondit un nombre à un nombre de décimales donné ?",
+     o:["TRONQUE","ARRONDI","ENT","PLAFOND"],a:1,
+     e:"<b>ARRONDI(nombre ; nb_décimales)</b> arrondit au plus proche. ENT garde la partie entière, TRONQUE coupe sans arrondir."},
+    {l:"M",q:"Dans un « Tableau » Excel (Ctrl + L), une formule peut désigner une colonne par…",
+     o:["son numéro uniquement","son nom, ex. [@Montant] (référence structurée)","une macro","la barre d'état"],a:1,
+     e:"Les <b>références structurées</b> utilisent les noms d'en-tête (ex. <b>[@Montant]</b>) : plus lisibles et extensibles automatiquement."},
+    {l:"F",q:"Comment afficher la valeur 0,25 sous la forme « 25 % » sans changer le nombre ?",
+     o:["La multiplier par 100","Appliquer le format Pourcentage","Ajouter le texte %","Utiliser la fonction POURCENT"],a:1,
+     e:"Le <b>format Pourcentage</b> (Accueil, ou Ctrl + Maj + %) affiche 0,25 comme 25 % ; la valeur réelle reste 0,25."},
+    {l:"M",q:"Quelle fonction renvoie la date du jour, recalculée à chaque ouverture ?",
+     o:["DATE","AUJOURDHUI()","JOUR","DATEVAL"],a:1,
+     e:"<b>AUJOURDHUI()</b> renvoie la date courante (sans heure) ; MAINTENANT() ajoute l'heure. Ce sont des fonctions volatiles."},
+    {l:"F",q:"Quel onglet permet d'insérer un graphique (histogramme, courbe…) ?",
+     o:["Insertion","Données","Formules","Création"],a:0,
+     e:"Onglet <b>Insertion ▸ Graphiques</b>. On sélectionne d'abord les données, puis le type de graphique adapté."},
+    {l:"M",q:"Quelle fonction assemble plusieurs textes en intercalant un séparateur entre chaque élément ?",
+     o:["CONCAT","JOINDRE.TEXTE","NOMPROPRE","STXT"],a:1,
+     e:"<b>JOINDRE.TEXTE(séparateur ; ignorer_vides ; plage)</b> insère le séparateur entre chaque valeur. CONCAT colle sans séparateur."},
+    {l:"M",q:"Que signifie l'erreur <b>#NOM?</b> dans une formule ?",
+     o:["Une division par zéro","Un nom de fonction ou de plage mal orthographié","Une référence supprimée","Une cellule vide"],a:1,
+     e:"<b>#NOM?</b> apparaît quand Excel ne reconnaît pas un texte : fonction mal écrite, nom inexistant ou guillemets manquants."},
   ],
   word:[
     {l:"F",q:"À quoi sert un « style » (Titre 1, Normal…) dans Word ?",
@@ -523,16 +583,30 @@ function shuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floo
 function pickQuestions(){
   let pool=[];
   if(state.module==="mix"){
-    for(const k in BANK) pool=pool.concat(BANK[k].map(q=>({...q,mod:k})));
+    for(const k in BANK) pool=pool.concat(BANK[k].map((q,i)=>({...q,mod:k,qid:k+":"+i})));
   }else{
-    pool=BANK[state.module].map(q=>({...q,mod:state.module}));
+    pool=BANK[state.module].map((q,i)=>({...q,mod:state.module,qid:state.module+":"+i}));
   }
-  pool=shuffle(pool).slice(0, Math.min(state.count, pool.length));
+  const n=Math.min(state.count, pool.length);
+  // Rotation entre sessions : on privilégie les questions pas encore vues,
+  // et on ne recycle qu'une fois tout le stock parcouru.
+  let seen=getSeen(state.module);
+  let unseen=pool.filter(q=>!seen.includes(q.qid));
+  if(unseen.length<n){ seen=[]; unseen=pool.slice(); }   // stock épuisé → on repart à zéro
+  const chosen=shuffle(unseen).slice(0,n);
+  setSeen(state.module, seen.concat(chosen.map(q=>q.qid)));
   // mélange aussi les options en gardant l'index de la bonne réponse
-  return pool.map(q=>{
+  return chosen.map(q=>{
     const order=shuffle([0,1,2,3]);
     return {...q, o:order.map(i=>q.o[i]), a:order.indexOf(q.a)};
   });
+}
+/* ----- mémoire des questions déjà vues (rotation, dégradation gracieuse) ----- */
+function getSeen(mod){
+  try{ const v=localStorage.getItem("seen:"+mod); return v?JSON.parse(v):[]; }catch(e){ return []; }
+}
+function setSeen(mod,ids){
+  try{ localStorage.setItem("seen:"+mod, JSON.stringify(ids)); }catch(e){}
 }
 
 /* ================= QUIZ ================= */

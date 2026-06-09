@@ -69,6 +69,16 @@ cd android && ./gradlew assembleDebug
 - Logique `localStorage` des meilleurs scores testée (null → écriture → mise à jour).
 - Icône source rendue et vérifiée visuellement.
 
+## Évolutions post-livraison
+
+- **Banque Excel étendue à 35 questions** (15 → 35) pour permettre un quiz mono-module
+  de longueur « certification ». Word/PPT/Outlook restent à ~11-12 (à compléter au besoin).
+- **Rotation des questions entre sessions** : `pickQuestions()` privilégie les questions
+  pas encore vues (mémorisées par module dans `localStorage`, clé `seen:<module>`) et ne
+  recycle qu'une fois tout le stock parcouru. Les options restent mélangées à chaque tirage.
+- Note : les questions sont des QCM **originaux** alignés sur le périmètre du référentiel
+  TOSA — ce ne sont pas les questions officielles (confidentielles, examen adaptatif).
+
 ## Points en suspens / à faire côté utilisateur
 
 1. **Activer GitHub Pages** : *Settings ▸ Pages ▸ Source : GitHub Actions* (à faire
