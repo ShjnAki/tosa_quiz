@@ -93,3 +93,55 @@ cd android && ./gradlew assembleDebug
 4. **Vérification navigateur** (Lighthouse PWA, rendu) : non exécutée localement
    (Chromium indisponible dans l'environnement de build) — à confirmer une fois Pages
    en ligne.
+
+---
+
+# Module « Gestionnaire de Paie » (ajout)
+
+Ajout d'un module **Gestionnaire de Paie**, pensé comme **la continuité du module Excel**
+(Excel appliqué à la paie + connaissances métier préparant au **Titre Professionnel
+Gestionnaire de paie, RNCP 37948**, niveau 5). Word / PowerPoint / Outlook ont été
+**supprimés** (choix assumé) : l'app ne contient plus que **Excel** + **Paie**.
+
+## Banque `BANK.paie` — 71 questions
+
+| Niveau | Nombre |
+|--------|--------|
+| F (courant) | 13 |
+| M (avancé)  | 33 |
+| A (expert)  | 25 |
+
+- **37 questions « Excel appliqué à la paie »** (continuité directe d'Excel) : brut/net,
+  cotisations (`=A2*(1-B2)`), 151,67 h, taux horaire, heures sup 25 %/50 %, congés, prorata,
+  13e mois, masse salariale (`SOMME`, `SOMME.SI.ENS`), `RECHERCHEV`/`SIERREUR` de barème,
+  `ARRONDI`, TCD, MFC, validation des données, format `[h]:mm`…
+- **34 questions « connaissances métier »** ajoutées :
+  - **BC01 — Bulletin & cotisations (14)** : bulletin clarifié, mentions interdites, URSSAF,
+    Agirc-Arrco, salariales vs patronales, CSG déductible/non déductible, assiette plafonnée/PMSS,
+    Montant Net Social, réduction générale (ex-Fillon), frais professionnels, allègement des
+    heures sup, heures complémentaires (temps partiel), avantages en nature, taux neutre du PAS.
+  - **BC02 — Vie du contrat & DSN (20)** : période d'essai (2/3/4 mois), CDD (18 mois max,
+    2 renouvellements, motif interdit), arrêt maladie (carence 3 j), accident du travail (sans
+    carence), subrogation, DSN (définition, remplacement de déclarations, échéances 5/15,
+    signalements d'événements), documents de fin de contrat, indemnité légale de licenciement
+    (1/4 puis 1/3 de mois/an), rupture conventionnelle (rétractation 15 j, homologation DREETS),
+    démission, saisie sur salaire, indemnité compensatrice de CP, maintien vs règle du 1/10.
+
+## Intégration UI
+
+- Carte « Gestionnaire de Paie » générée automatiquement (avant le Mix), couleur dédiée
+  `--paie:#e07c44`. En-tête et couleur via `MODULES[q.mod]` (aucun code spécifique).
+- **Examen blanc (Mix)** : tire désormais dans **toute la banque** (Excel + Paie).
+- Sous-titre « Excel · Gestionnaire de Paie » ; mention RNCP 37948 dans le pied d'accueil.
+
+## Non modifié
+
+Scoring /1000, chrono, réglages, rotation `localStorage` (`seen`), service worker, manifeste PWA,
+et les 400 questions Excel (hors une explication F7 qui citait des logiciels retirés).
+
+## Points d'attention (à revérifier chaque année)
+
+Montants/règles susceptibles d'évoluer : SMIC, **PMSS/PASS**, plafonds d'exonération des heures
+sup, seuil de la réduction générale (1,6 SMIC), CSG/CRDS, barème de l'indemnité de licenciement,
+échéances DSN. Les explications restent volontairement qualitatives (pas de taux chiffrés figés)
+pour limiter l'obsolescence. Base : législation française **2025-2026**.
