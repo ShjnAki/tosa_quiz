@@ -105,11 +105,16 @@ Gestionnaire de paie, RNCP 37948**, niveau 5). Word / PowerPoint / Outlook ont �
 
 ## Banque `BANK.paie` — 71 questions
 
-| Niveau | Nombre |
-|--------|--------|
-| F (courant) | 13 |
-| M (avancé)  | 33 |
-| A (expert)  | 25 |
+| Niveau | Nombre | Part |
+|--------|--------|------|
+| F (courant) | 42 | 59 % |
+| M (avancé)  | 25 | 35 % |
+| A (expert)  | 4  | 6 %  |
+
+Répartition volontairement orientée **fondamentaux** : les faits et définitions de base
+(taux, durées, définitions, organismes) sont en **F** ; les calculs multi-étapes en **M** ;
+seules quelques subtilités Excel expertes (`SOMME.SI.ENS`, `[h]:mm`, `SIERREUR`, brut↔net inversé)
+restent en **A**.
 
 - **37 questions « Excel appliqué à la paie »** (continuité directe d'Excel) : brut/net,
   cotisations (`=A2*(1-B2)`), 151,67 h, taux horaire, heures sup 25 %/50 %, congés, prorata,
