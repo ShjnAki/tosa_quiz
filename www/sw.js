@@ -2,7 +2,7 @@
    - HTML / navigation : network-first (le contenu reste à jour ; repli cache hors-ligne).
    - Ressources statiques (polices, icônes, manifeste) : cache-first.
    Pour forcer un rafraîchissement du shell : incrémenter CACHE_VERSION. */
-const CACHE_VERSION = "tosa-v3";
+const CACHE_VERSION = "tosa-v4";
 
 // Chemins RELATIFS au scope du SW (important pour GitHub Pages en sous-dossier).
 const APP_SHELL = [

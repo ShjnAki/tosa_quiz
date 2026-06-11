@@ -74,6 +74,23 @@
   .mod__meta{font-size:11.5px; color:var(--muted-2); margin-top:12px; font-family:var(--display)}
   .mod--wide{grid-column:1 / -1}
   .mod--wide .mod__desc{max-width:90%}
+  .grid-eyebrow{grid-column:1 / -1; font-family:var(--display); font-size:12px; letter-spacing:1.6px;
+    text-transform:uppercase; color:var(--muted-2); margin:10px 0 0}
+
+  /* ---- historique ---- */
+  .hist-empty{color:var(--muted); font-size:14px; padding:16px 0}
+  .hist-group{position:relative; overflow:hidden; background:var(--bg-2); border:1px solid var(--line);
+    border-radius:var(--r); padding:14px 16px 8px; margin-bottom:12px}
+  .hist-group__bar{position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--c)}
+  .hist-group__head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:8px}
+  .hist-group__name{font-family:var(--display); font-weight:600; font-size:15px; display:flex; align-items:center; gap:9px}
+  .hist-group__dot{width:9px; height:9px; border-radius:3px; background:var(--c)}
+  .hist-group__best{font-family:var(--display); font-size:12px; color:var(--muted-2)}
+  .hist-row{display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:8px 0; border-top:1px solid var(--line); font-size:13px}
+  .hist-row__date{color:var(--muted-2); font-size:12px; min-width:96px}
+  .hist-row__meta{color:var(--muted); font-size:12px; flex:1; text-align:right}
+  .hist-row__score{font-family:var(--display); font-weight:600; font-variant-numeric:tabular-nums; min-width:62px; text-align:right}
 
   /* ---- options panel ---- */
   .panel{background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r); padding:16px; margin-top:14px}
@@ -219,6 +236,7 @@
       </div>
     </div>
     <div style="margin-top:14px"><button class="cta" id="startBtn">Commencer</button></div>
+    <div style="margin-top:10px"><button class="cta cta--ghost" id="histBtn">Historique des scores</button></div>
     <p class="foot">QCM d'entraînement à choix unique. Le score /1000 et le niveau sont une estimation indicative
       calquée sur le barème TOSA officiel — l'examen réel est adaptatif (35 questions, 60 min).
       Le module <b>Gestionnaire de Paie</b> prolonge Excel et prépare au Titre Professionnel
@@ -276,6 +294,16 @@
     <div class="cta-row">
       <button class="cta cta--ghost" id="homeBtn">Accueil</button>
       <button class="cta" id="retryBtn">Rejouer</button>
+    </div>
+  </section>
+
+  <!-- ========== ÉCRAN HISTORIQUE ========== -->
+  <section id="history" class="hidden">
+    <div class="eyebrow">Historique des scores</div>
+    <div id="histBody"></div>
+    <div class="cta-row">
+      <button class="cta cta--ghost" id="histBackBtn">Accueil</button>
+      <button class="cta cta--ghost" id="histClearBtn">Effacer l'historique</button>
     </div>
   </section>
 </div>
@@ -1715,6 +1743,95 @@ const BANK = {
     {l:"M",q:"Pour l'indemnité de congés payés, l'employeur retient…",
      o:["toujours le maintien de salaire","toujours la règle du 1/10","le montant le plus favorable au salarié entre maintien et 1/10","le montant le plus faible"],a:2,
      e:"On compare le <b>maintien de salaire</b> et la <b>règle du 1/10</b> et on retient le résultat <b>le plus favorable au salarié</b>."},
+
+    /* ----- Connaissances paie : compléments (BC01/BC02) ----- */
+    {l:"F",q:"Combien de temps l'employeur doit-il conserver un double des bulletins de paie ?",
+     o:["6 mois","1 an","5 ans","Aucune obligation"],a:2,
+     e:"L'employeur conserve un double des bulletins (papier ou électronique) pendant <b>5 ans</b>."},
+    {l:"F",q:"Pendant combien de temps un salarié a-t-il intérêt à conserver ses bulletins de paie ?",
+     o:["1 an","5 ans","Sans limite, jusqu'à la liquidation de la retraite","6 mois"],a:2,
+     e:"Le bulletin justifie la carrière : il est conseillé de le <b>conserver sans limitation de durée</b>, jusqu'à la retraite."},
+    {l:"M",q:"À défaut d'accord collectif, le contingent annuel d'heures supplémentaires est de…",
+     o:["120 heures","220 heures","360 heures","35 heures"],a:1,
+     e:"Le <b>contingent annuel</b> d'heures supplémentaires est, par défaut, de <b>220 heures</b> par salarié."},
+    {l:"M",q:"Les heures supplémentaires effectuées au-delà du contingent annuel ouvrent droit à…",
+     o:["rien de plus","une contrepartie obligatoire en repos","une amende","une baisse de salaire"],a:1,
+     e:"Au-delà du contingent, le salarié bénéficie d'une <b>contrepartie obligatoire en repos</b>, en plus de la majoration."},
+    {l:"F",q:"Quel jour férié est, par principe, obligatoirement chômé et payé pour tous ?",
+     o:["Le 14 juillet","Le 1er mai","Le 11 novembre","Le lundi de Pâques"],a:1,
+     e:"Le <b>1er mai</b> est le seul jour férié légalement chômé et payé ; travaillé, il ouvre droit à une majoration de 100 %."},
+    {l:"M",q:"La journée de solidarité correspond à…",
+     o:["un jour de congé supplémentaire","une journée de travail non rémunérée finançant l'autonomie","une prime annuelle","un jour de grève"],a:1,
+     e:"La <b>journée de solidarité</b> est une journée de travail (souvent 7 h) non rémunérée pour le salarié, dont la valeur finance la perte d'autonomie."},
+    {l:"M",q:"La durée minimale légale de travail d'un salarié à temps partiel est, sauf dérogation, de…",
+     o:["20 h/semaine","24 h/semaine","28 h/semaine","35 h/semaine"],a:1,
+     e:"Sauf dérogation ou demande écrite du salarié, la durée minimale d'un temps partiel est de <b>24 h par semaine</b>."},
+    {l:"F",q:"L'employeur doit proposer une complémentaire santé collective et en financer au moins…",
+     o:["10 %","25 %","50 %","100 %"],a:2,
+     e:"La <b>mutuelle d'entreprise</b> est obligatoire et l'employeur en prend en charge <b>au moins 50 %</b>."},
+    {l:"M",q:"Pour un licenciement (hors faute grave), le préavis légal est de 2 mois lorsque l'ancienneté est…",
+     o:["d'au moins 6 mois","comprise entre 6 mois et 2 ans","d'au moins 2 ans","supérieure à 10 ans"],a:2,
+     e:"Le préavis légal est d'<b>1 mois</b> entre 6 mois et 2 ans d'ancienneté, et de <b>2 mois à partir de 2 ans</b>."},
+    {l:"A",q:"L'indemnité légale de licenciement n'est due qu'à partir d'une ancienneté de…",
+     o:["3 mois","8 mois","1 an","2 ans"],a:1,
+     e:"L'indemnité légale de licenciement est due dès <b>8 mois d'ancienneté</b> ininterrompue (hors faute grave ou lourde)."},
+    {l:"M",q:"Le maintien de salaire par l'employeur en cas de maladie (loi de mensualisation) suppose en principe…",
+     o:["aucune condition","au moins 1 an d'ancienneté","10 ans d'ancienneté","un statut cadre"],a:1,
+     e:"Le maintien légal de salaire en maladie suppose en général <b>1 an d'ancienneté</b> et un arrêt justifié dans les délais."},
+    {l:"M",q:"La durée légale du congé de maternité pour un premier enfant est de…",
+     o:["8 semaines","16 semaines","26 semaines","6 semaines"],a:1,
+     e:"Le congé de maternité « classique » est de <b>16 semaines</b> (6 avant et 10 après l'accouchement)."},
+    {l:"M",q:"Depuis 2021, le congé de paternité et d'accueil de l'enfant est de…",
+     o:["11 jours","18 jours","25 jours calendaires","3 jours"],a:2,
+     e:"Le congé de paternité est de <b>25 jours calendaires</b> (32 en cas de naissances multiples), en plus des 3 jours pour naissance."},
+    {l:"A",q:"La cotisation accidents du travail / maladies professionnelles (AT/MP) est…",
+     o:["partagée moitié-moitié","à la charge exclusive de l'employeur","payée par le salarié","facultative"],a:1,
+     e:"La cotisation <b>AT/MP</b> est <b>exclusivement patronale</b> ; son taux dépend de la sinistralité de l'entreprise."},
+    {l:"A",q:"La CSG/CRDS sur les salaires se calcule sur…",
+     o:["100 % du brut","98,25 % du brut (après abattement pour frais professionnels)","le net à payer","le net imposable"],a:1,
+     e:"L'assiette de la <b>CSG/CRDS</b> est de <b>98,25 % du brut</b> (abattement forfaitaire de 1,75 % pour frais professionnels, dans une limite)."},
+    {l:"A",q:"Le plafond annuel de la Sécurité sociale (PASS) correspond à…",
+     o:["12 fois le PMSS","52 fois le PMSS","le SMIC annuel","2 fois le PMSS"],a:0,
+     e:"Le <b>PASS</b> est égal à <b>12 × PMSS</b> ; il sert d'assiette à diverses cotisations plafonnées."},
+    {l:"F",q:"Où trouve-t-on l'intitulé de la convention collective applicable au salarié ?",
+     o:["Uniquement au greffe","Mentionné sur le bulletin de paie","Sur l'avis d'imposition","Nulle part"],a:1,
+     e:"La <b>convention collective</b> applicable doit être mentionnée sur le <b>bulletin de paie</b>."},
+    {l:"M",q:"Une prime d'ancienneté est généralement prévue par…",
+     o:["le Code du travail pour tous","la convention collective ou un accord","l'URSSAF","le salarié lui-même"],a:1,
+     e:"La <b>prime d'ancienneté</b> n'est pas un droit général du Code du travail : elle découle le plus souvent de la <b>convention collective</b>."},
+    {l:"A",q:"Un reçu pour solde de tout compte signé sans réserve ne peut plus être contesté au-delà de…",
+     o:["8 jours","1 mois","6 mois","2 ans"],a:2,
+     e:"Le <b>solde de tout compte</b> signé a un effet libératoire au bout de <b>6 mois</b> sur les sommes qui y sont mentionnées."},
+    {l:"F",q:"La participation de l'employeur aux titres-restaurant est exonérée de cotisations si elle représente…",
+     o:["100 % de la valeur","entre 50 % et 60 % de la valeur, dans une limite","moins de 10 %","n'importe quel montant"],a:1,
+     e:"La part patronale des <b>titres-restaurant</b> est exonérée si elle est comprise entre <b>50 % et 60 %</b> de la valeur, dans une limite par titre."},
+    {l:"M",q:"Date d'embauche en A2. Quelle fonction calcule l'ancienneté en années révolues à ce jour ?",
+     o:["=AUJOURDHUI()-A2","=DATEDIF(A2 ; AUJOURDHUI() ; «y»)","=ANNEE(A2)","=A2-AUJOURDHUI()"],a:1,
+     e:"<b>=DATEDIF(A2 ; AUJOURDHUI() ; «y»)</b> renvoie le nombre d'années complètes — utile pour l'ancienneté et la prime correspondante."},
+    {l:"M",q:"Quelle fonction compte les jours ouvrés (hors week-ends et jours fériés fournis) entre deux dates ?",
+     o:["=JOURS(début ; fin)","=NB.JOURS.OUVRES(début ; fin ; fériés)","=JOURSEM(date)","=DATE(a ; m ; j)"],a:1,
+     e:"<b>=NB.JOURS.OUVRES(début ; fin ; jours_fériés)</b> compte les jours travaillés d'une période — pratique pour proratiser un salaire."},
+    {l:"M",q:"Quelle fonction renvoie le dernier jour du mois d'une date de paie située en A2 ?",
+     o:["=FIN.MOIS(A2 ; 0)","=MOIS(A2)","=JOUR(A2)","=DATE(A2 ; 0 ; 0)"],a:0,
+     e:"<b>=FIN.MOIS(A2 ; 0)</b> renvoie le dernier jour du mois en cours — utile pour borner une période de paie."},
+    {l:"A",q:"Quelle fonction récente cherche un taux dans un barème dans n'importe quelle direction (y compris vers la gauche) ?",
+     o:["RECHERCHEX","RECHERCHEH","DECALER seul","SOMMEPROD"],a:0,
+     e:"<b>RECHERCHEX</b> (Excel 2021/365) cherche dans n'importe quelle colonne, gère les valeurs absentes et renvoie à gauche comme à droite."},
+    {l:"M",q:"Comment exprime-t-on 7 h 45 en heures décimales (centièmes) ?",
+     o:["7,45","7,75","7,90","7,15"],a:1,
+     e:"45 min = 0,75 h : 7 h 45 vaut donc <b>7,75</b> en décimal."},
+    {l:"A",q:"Pour arrondir systématiquement un nombre d'heures (A2) au quart d'heure supérieur, quelle formule ?",
+     o:["=ARRONDI(A2 ; 2)","=ARRONDI.SUP(A2/0,25 ; 0)*0,25","=ENT(A2)","=ARRONDI.INF(A2 ; 0)"],a:1,
+     e:"<b>=ARRONDI.SUP(A2/0,25 ; 0)*0,25</b> arrondit toujours au quart d'heure (0,25 h) supérieur."},
+    {l:"M",q:"Quelle fonction affiche un nombre selon un format précis (ex. « 0001 » pour un matricule) ?",
+     o:["=CONCAT(A2)","=TEXTE(A2 ; «0000»)","=VALEUR(A2)","=MAJUSCULE(A2)"],a:1,
+     e:"<b>=TEXTE(A2 ; «0000»)</b> met en forme le nombre en texte selon un masque (matricule, date, montant)."},
+    {l:"M",q:"Pour compter les salariés « Cadre » du service « R&D » (colonnes Statut et Service), quelle fonction ?",
+     o:["=NB.SI(Statut ; «Cadre»)","=NB.SI.ENS(Statut ; «Cadre» ; Service ; «R&D»)","=SOMME.SI(Service ; «R&D»)","=NBVAL(Statut)"],a:1,
+     e:"<b>NB.SI.ENS</b> compte selon plusieurs critères simultanés (statut ET service)."},
+    {l:"M",q:"Un taux de cotisation unique est en F1 ; on calcule la cotisation de chaque salarié (brut en B2) en recopiant vers le bas. Quelle formule en C2 ?",
+     o:["=B2*F1","=B2*$F$1","=$B$2*F1","=B2/F1"],a:1,
+     e:"On fige le taux avec des <b>$</b> pour qu'il ne se décale pas à la recopie : <b>=B2*$F$1</b>."},
   ],
 };
 
@@ -1723,7 +1840,7 @@ const state = {module:null, count:10, mode:"immediate", timer:false,
   questions:[], idx:0, answers:[], answered:false, timeLeft:0, timerId:null};
 
 const $ = s => document.querySelector(s);
-const screens = {home:$("#home"), quiz:$("#quiz"), results:$("#results")};
+const screens = {home:$("#home"), quiz:$("#quiz"), results:$("#results"), history:$("#history")};
 function show(name){for(const k in screens) screens[k].classList.toggle("hidden", k!==name);
   window.scrollTo({top:0,behavior:"instant"});}
 
@@ -1734,6 +1851,21 @@ function getBest(mod){
 }
 function setBest(mod,score){
   try{ localStorage.setItem("best:"+mod, JSON.stringify(score)); } catch(e){}
+}
+
+/* ----- historique des séries (localStorage) ----- */
+function getHistory(){
+  try{ const v=localStorage.getItem("history"); return v?JSON.parse(v):[]; }catch(e){ return []; }
+}
+function addHistory(entry){
+  try{ const h=getHistory(); h.unshift(entry); if(h.length>200) h.length=200;
+    localStorage.setItem("history", JSON.stringify(h)); }catch(e){}
+}
+// regroupe les séries : Excel (module + examen Excel), Paie, Examen blanc Mix
+function seriesOf(key){
+  if(key==="paie") return {id:"paie", name:"Gestionnaire de Paie", color:"var(--paie)"};
+  if(key==="mix")  return {id:"mix",  name:"Examen blanc — Mix",   color:"var(--mix)"};
+  return {id:"excel", name:"Excel", color:"var(--excel)"};   // excel + exam_excel
 }
 
 /* ================= ACCUEIL ================= */
@@ -1751,13 +1883,27 @@ function buildHome(){
     b.addEventListener("click",()=>selectModule(key,b));
     grid.appendChild(b);
   }
-  // carte Mix / examen blanc
+  // séparateur de section
+  const sep=document.createElement("div"); sep.className="grid-eyebrow"; sep.textContent="Examens blancs";
+  grid.appendChild(sep);
+
+  // examen blanc — Excel uniquement
+  const exExcel=document.createElement("button");
+  exExcel.className="mod mod--wide"; exExcel.style.setProperty("--c","var(--excel)"); exExcel.dataset.module="exam_excel";
+  exExcel.innerHTML=`<span class="mod__bar"></span>
+    <div class="mod__name"><span class="mod__dot"></span>Examen blanc — Excel</div>
+    <div class="mod__desc">Tirage aléatoire dans toute la banque Excel — conditions d'examen, avec rotation des questions entre sessions.</div>
+    <div class="mod__meta">Excel uniquement · ${BANK.excel.length} questions</div>`;
+  exExcel.addEventListener("click",()=>selectModule("exam_excel",exExcel));
+  grid.appendChild(exExcel);
+
+  // examen blanc — Mix (Excel + Paie)
   const mix=document.createElement("button");
   mix.className="mod mod--wide"; mix.style.setProperty("--c","var(--mix)"); mix.dataset.module="mix";
   mix.innerHTML=`<span class="mod__bar"></span>
-    <div class="mod__name"><span class="mod__dot"></span>Examen blanc (Mix)</div>
+    <div class="mod__name"><span class="mod__dot"></span>Examen blanc — Mix</div>
     <div class="mod__desc">Tirage aléatoire dans toute la banque (Excel + Gestionnaire de Paie) — conditions d'examen, avec rotation des questions entre sessions.</div>
-    <div class="mod__meta">Excel + Paie mélangés</div>`;
+    <div class="mod__meta">Excel + Paie mélangés · ${BANK.excel.length+BANK.paie.length} questions</div>`;
   mix.addEventListener("click",()=>selectModule("mix",mix));
   grid.appendChild(mix);
 
@@ -1777,10 +1923,20 @@ function buildSeg(sel,vals,attr,cb){
     seg.appendChild(b);
   });
 }
+// modules « sources » d'une série (les examens blancs réutilisent les banques existantes)
+function srcKeys(key){
+  if(key==="mix") return ["excel","paie"];
+  if(key==="exam_excel") return ["excel"];
+  return [key];
+}
+function colorFor(key){
+  if(MODULES[key]) return MODULES[key].color;
+  return key==="exam_excel" ? "var(--excel)" : "var(--mix)";
+}
 function selectModule(key,el){
   state.module=key;
   document.querySelectorAll(".mod").forEach(m=>m.style.borderColor="");
-  el.style.borderColor=MODULES[key]?MODULES[key].color:"var(--mix)";
+  el.style.borderColor=colorFor(key);
 }
 // segments mode / timer
 $("#segMode").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
@@ -1796,11 +1952,7 @@ $("#segTimer").querySelectorAll("button").forEach(b=>b.addEventListener("click",
 function shuffle(a){a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
 function pickQuestions(){
   let pool=[];
-  if(state.module==="mix"){
-    for(const k in BANK) pool=pool.concat(BANK[k].map((q,i)=>({...q,mod:k,qid:k+":"+i})));
-  }else{
-    pool=BANK[state.module].map((q,i)=>({...q,mod:state.module,qid:state.module+":"+i}));
-  }
+  srcKeys(state.module).forEach(k=>pool=pool.concat(BANK[k].map((q,i)=>({...q,mod:k,qid:k+":"+i}))));
   const n=Math.min(state.count, pool.length);
   // Rotation entre sessions : on privilégie les questions pas encore vues,
   // et on ne recycle qu'une fois tout le stock parcouru.
@@ -1956,6 +2108,9 @@ function finish(){
     $("#rBest").textContent=`Ton record sur ce module : ${prev}.`;
   }
 
+  // historique de la série
+  addHistory({ts:Date.now(), key:modKey, score, good, total, rate, timer:state.timer});
+
   // revue des erreurs
   buildReview();
   show("results");
@@ -2000,6 +2155,52 @@ function buildReview(){
 $("#homeBtn").addEventListener("click",()=>show("home"));
 $("#retryBtn").addEventListener("click",startQuiz);
 $("#startBtn").addEventListener("click",startQuiz);
+
+/* ================= HISTORIQUE ================= */
+function fmtDate(ts){
+  try{ return new Date(ts).toLocaleString("fr-FR",
+    {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}); }
+  catch(e){ return ""; }
+}
+function renderHistory(){
+  const body=$("#histBody"); body.innerHTML="";
+  const hist=getHistory();
+  if(hist.length===0){
+    body.innerHTML=`<div class="hist-empty">Aucune série enregistrée pour l'instant. Termine un quiz pour voir tes scores ici.</div>`;
+    return;
+  }
+  // regroupe par série, dans l'ordre Excel ▸ Paie ▸ Mix
+  const order=["excel","paie","mix"];
+  const groups={};
+  hist.forEach(e=>{ const s=seriesOf(e.key); (groups[s.id]=groups[s.id]||{meta:s,items:[]}).items.push(e); });
+  order.filter(id=>groups[id]).forEach(id=>{
+    const g=groups[id];
+    const best=Math.max(...g.items.map(e=>e.score));
+    const card=document.createElement("div"); card.className="hist-group"; card.style.setProperty("--c",g.meta.color);
+    let rows=`<span class="hist-group__bar"></span>
+      <div class="hist-group__head">
+        <div class="hist-group__name"><span class="hist-group__dot"></span>${g.meta.name}</div>
+        <div class="hist-group__best">${g.items.length} série(s) · record ${best}/1000</div>
+      </div>`;
+    g.items.forEach(e=>{
+      rows+=`<div class="hist-row">
+        <span class="hist-row__date">${fmtDate(e.ts)}</span>
+        <span class="hist-row__meta">${e.good}/${e.total} · ${e.rate}%${e.timer?" · chrono":""}</span>
+        <span class="hist-row__score">${e.score}/1000</span>
+      </div>`;
+    });
+    card.innerHTML=rows;
+    body.appendChild(card);
+  });
+}
+$("#histBtn").addEventListener("click",()=>{renderHistory(); show("history");});
+$("#histBackBtn").addEventListener("click",()=>show("home"));
+$("#histClearBtn").addEventListener("click",()=>{
+  if(confirm("Effacer tout l'historique des scores ?")){
+    try{ localStorage.removeItem("history"); }catch(e){}
+    renderHistory();
+  }
+});
 
 /* ================= INIT ================= */
 buildHome();

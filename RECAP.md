@@ -150,3 +150,37 @@ Montants/règles susceptibles d'évoluer : SMIC, **PMSS/PASS**, plafonds d'exon�
 sup, seuil de la réduction générale (1,6 SMIC), CSG/CRDS, barème de l'indemnité de licenciement,
 échéances DSN. Les explications restent volontairement qualitatives (pas de taux chiffrés figés)
 pour limiter l'obsolescence. Base : législation française **2025-2026**.
+
+---
+
+# Examens blancs, +29 questions Paie & onglet Historique
+
+## Banque Paie : 71 → **100 questions**
+
++29 questions sans doublon (vérifié par normalisation du texte). Nouveaux thèmes : conservation
+des bulletins, contingent HS (220 h) et repos compensateur, 1er mai / journée de solidarité,
+temps partiel (24 h), mutuelle (50 %), préavis, ancienneté mini licenciement (8 mois), maintien
+maladie, congés maternité/paternité, AT/MP (patronal), CSG sur 98,25 %, PASS = 12 × PMSS,
+convention collective, prime d'ancienneté, solde de tout compte (6 mois), titres-restaurant, et
+côté Excel : `DATEDIF`, `NB.JOURS.OUVRES`, `FIN.MOIS`, `RECHERCHEX`, conversion décimale,
+`ARRONDI.SUP`, `TEXTE`, `NB.SI.ENS`, référence absolue d'un taux.
+Répartition finale : **F=48 · M=41 · A=11**.
+
+## Deux examens blancs
+
+Section « Examens blancs » sur l'accueil, avec deux cartes pleine largeur :
+- **Examen blanc — Excel** (`exam_excel`) : tire uniquement dans la banque Excel.
+- **Examen blanc — Mix** (`mix`) : tire dans Excel + Paie.
+
+Refactor : `srcKeys(key)` mappe une série vers ses banques sources ; `pickQuestions` est unifié
+(plus de branche `if mix`). Rotation `seen:` et record `best:` indépendants par série.
+
+## Onglet Historique
+
+Nouvel écran `#history` (bouton « Historique des scores » sur l'accueil). Chaque quiz terminé est
+enregistré dans `localStorage` (clé `history`, 200 entrées max) via `addHistory()` dans `finish()`.
+Affichage **groupé par série** (Excel — module + examen Excel —, Gestionnaire de Paie, Examen blanc
+Mix) avec, par série, le nombre de sessions, le record et la liste datée (score /1000, réussite,
+mention chrono). Bouton « Effacer l'historique » (avec confirmation).
+
+SW bumpé **tosa-v4**.
